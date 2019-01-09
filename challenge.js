@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   minus.addEventListener("click", decrementCounter)
   pause.addEventListener("click", togglePaused)
   heart.addEventListener("click", addLike)
+  comment_form.addEventListener("submit", handleSubmit)
 
   function incrementCounter(event){
     counter.innerText = parseInt(counter.innerText) + 1
@@ -44,12 +45,22 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderLikes(){
-    comments.innerHTML = ""
+    likes.innerHTML = ""
     for (let key in numberTracker){
       const li = document.createElement("li")
       li.innerText = `${key} has been liked ${numberTracker[key]} times.`
-      comments.append(li)
+      likes.append(li)
     }
+  }
+
+  function handleSubmit(event){
+    event.preventDefault()
+    const comment = event.target[0].value
+    // console.log(event.target.elements);
+    const li = document.createElement("li")
+    li.innerText = comment
+    comments.append(li)
+    event.target.reset()
   }
 
 })
