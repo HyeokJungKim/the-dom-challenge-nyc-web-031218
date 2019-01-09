@@ -1,57 +1,55 @@
-const counter = document.getElementById('counter')
-const plus = document.getElementById('+')
-const minus = document.getElementById('-')
-const heart = document.getElementById('<3')
-const pause = document.getElementById('pause')
-const likes = document.querySelector('ul.likes')
-const comment_form = document.getElementById('comment-form')
-const comments = document.getElementById('list')
+document.addEventListener("DOMContentLoaded", () => {
+  const counter = document.getElementById('counter')
+  const plus = document.getElementById('+')
+  const minus = document.getElementById('-')
+  const heart = document.getElementById('<3')
+  const pause = document.getElementById('pause')
+  const likes = document.querySelector('ul.likes')
+  const comment_form = document.getElementById('comment-form')
+  const comments = document.getElementById('list')
 
+  let paused = false
+  let numberTracker = {}
 
-let notpaused = true
+  let interval = setInterval(incrementCounter, 1000)
+  plus.addEventListener("click", incrementCounter)
+  minus.addEventListener("click", decrementCounter)
+  pause.addEventListener("click", togglePaused)
+  heart.addEventListener("click", addLike)
 
-window.addEventListener("load", function(){
-  setInterval(function(){if(notpaused){counter.innerText = (parseInt(counter.innerText) + 1).toString()}}, 1000)
+  function incrementCounter(event){
+    counter.innerText = parseInt(counter.innerText) + 1
   }
-)
 
-plus.addEventListener( "click", () => {if(notpaused){counter.innerText = (parseInt(counter.innerText) + 1).toString()}} )
-
-minus.addEventListener( "click", () => {if(notpaused){counter.innerText = (parseInt(counter.innerText) - 1).toString()}} )
-
-pause.addEventListener( "click", () => {
-  if(pause.innerText == "pause"){
-    pause.innerText = "resume"
-    notpaused = false
-  } else {
-    pause.innerText = "pause"
-    notpaused = true;
+  function decrementCounter(){
+    counter.innerText = parseInt(counter.innerText) - 1
   }
-  })
 
-let tracker = {}
-
-heart.addEventListener( "click", () => {
-  {if(notpaused){
-  if(!tracker[counter.innerText]){
-    tracker[counter.innerText] = 1
-  } else {
-   ++tracker[counter.innerText]
+  function togglePaused(){
+    paused = !paused
+    if (paused) {
+      clearInterval(interval)
+      pause.innerText = "resume"
+    } else {
+      interval = setInterval(incrementCounter, 1000)
+      pause.innerText = "pause"
+    }
   }
-  likes.innerHTML = " ";
-  for(const element in tracker) {
-    const li = document.createElement("li")
-    li.appendChild(document.createTextNode(`${element} has been liked ${tracker[element]} times`))
-    likes.appendChild(li)
-  }}
-}})
 
-comment_form.addEventListener("submit", function(){
-  event.preventDefault()
-  const comment = document.getElementById("comment")
-  const li = document.createElement("li")
-  li.appendChild(document.createTextNode(`${comment.value}`))
-  comments.appendChild(li)
+  function addLike(){
+    let second = counter.innerText
+    numberTracker[second] = numberTracker[second] || 0
+    numberTracker[second] += 1
+    renderLikes()
+  }
 
-  console.log(comment)
+  function renderLikes(){
+    comments.innerHTML = ""
+    for (let key in numberTracker){
+      const li = document.createElement("li")
+      li.innerText = `${key} has been liked ${numberTracker[key]} times.`
+      comments.append(li)
+    }
+  }
+
 })
